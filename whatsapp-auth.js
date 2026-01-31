@@ -1,6 +1,11 @@
 import QRCode from 'qrcode';
 import qrcode from 'qrcode-terminal';
 import { sock } from './index.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const phoneNumber = process.env.PHONENUMBER;
 
 export function qrCodeAuthentication(){
     sock.ev.on('connection.update', async(update) => {
@@ -14,7 +19,7 @@ export function qrCodeAuthentication(){
             }
     })
 }
-const phoneNumber = "254789751049";
+
 
 export function pairingCodeAuthentication(){
     sock.ev.on('connection.update', async (update) => {

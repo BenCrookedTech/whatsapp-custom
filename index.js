@@ -23,3 +23,13 @@ export const sock = makeWASocket({
 })
 
 qrCodeAuthentication();
+
+sock.ev.on('messaging-history.set', ({
+    chats: newChats,
+    contacts: newContacts,
+    messages: newMessages,
+    syncType
+}) =>{
+    
+}
+)
