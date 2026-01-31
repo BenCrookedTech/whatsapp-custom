@@ -30,6 +30,18 @@ sock.ev.on('messaging-history.set', ({
     messages: newMessages,
     syncType
 }) =>{
-    
+    console.log(newChats)
+    console.log(newContacts)
+    console.log(newMessages)
 }
 )
+
+sock.ev.on('messages.upsert', ({type, messages}) =>{
+    if(type == "notify"){
+        for(const message of messages){
+
+        }
+    }else{
+        
+    }
+})
