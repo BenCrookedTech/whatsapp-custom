@@ -1,47 +1,32 @@
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import router from "./routes/routes.js";
 import dotenv from 'dotenv';
-import makeWASocket, { useMultiFileAuthState } from 'baileys';
-import pino from 'pino';
-import QRCode from 'qrcode';
-import { DisconnectReason } from 'baileys';
-import { Boom } from '@hapi/boom';
-import qrcode from 'qrcode-terminal';
-import { qrCodeAuthentication, pairingCodeAuthentication } from './whatsapp-auth.js';
+import { initWhatsApp } from './whatsapp-client.js';
 
-// const groupCache = new NodeCache({
+dotenv.config();
 
-// })
+const port = process.env.PORT;
+
+const app = express();
+app.use(express.json());
+
+app.use("/api", router);
 
 
-const {state, saveCreds} = await useMultiFileAuthState('./auth');
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {origin: "*"},
+});
 
-export const sock = makeWASocket({
-    auth: state,
-    logger: pino({level: 'silent'}),
-    browser: ['Web-spy', 'Chrome', '1.0.0'],
-    cachedGroupMetadata: async(jid) => groupCache.get(jid)
+io.on("connection", (socket) => {
+    console.log("App connected successfully", socket.id);
 
-})
+    socket.emit("wa:status", {connection: "connected_to_backend"});
+});
 
-qrCodeAuthentication();
-
-sock.ev.on('messaging-history.set', ({
-    chats: newChats,
-    contacts: newContacts,
-    messages: newMessages,
-    syncType
-}) =>{
-    console.log(newChats)
-    console.log(newContacts)
-    console.log(newMessages)
-}
-)
-
-sock.ev.on('messages.upsert', ({type, messages}) =>{
-    if(type == "notify"){
-        for(const message of messages){
-
-        }
-    }else{
-        
-    }
+server.listen(port, async() => {
+    console.log(`Server running on port ${port}`);
+    await initWhatsApp(io);
 })
