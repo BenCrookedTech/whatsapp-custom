@@ -26,11 +26,14 @@ router.post("/wa/send", async (req, res) => {
 router.post("/wa/pairing-code", async (req, res) => {
     try {
         const {phoneNumber} = req.body;
-        if(!phoneNumber) return res.status(400).json({error: "phoneNumber required"});
 
         const sock = getSock();
+        const code = await sock.requestPairingCode(phoneNumber);
+        // if(!phoneNumber) return res.status(400).json({error: "phoneNumber required"});
 
-        res.json({ ok: true, code});
+        
+
+        return res.json({ ok: true, code});
     } catch (error) {
         res.status(500).json({ok: false, error: error.message});
     }

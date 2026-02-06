@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
     socket.emit("wa:status", {connection: "connected_to_backend"});
 });
 
-server.listen(port, async() => {
+server.listen(port, "0.0.0.0", async() => {
     console.log(`Server running on port ${port}`);
     await initWhatsApp(io);
 })
